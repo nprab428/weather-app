@@ -20,8 +20,8 @@ export default class App extends Component {
 
   fetchData() {
     const request = require('request')
-    let apiKey = 'f65b98833ddeb2eb380ed34026819ca4'
-    let url = `http://api.openweathermap.org/data/2.5/forecast?q=${this.state.city}&cnt=5&appid=${apiKey}&units=imperial`
+    const credentials = require("./etc/credentials.json")
+    let url = `http://api.openweathermap.org/data/2.5/forecast?q=${this.state.city}&cnt=5&appid=${credentials.api_key}&units=imperial`
 
     this.setState({ loading: true });
     request(url, function (err, response, body) {
