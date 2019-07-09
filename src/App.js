@@ -8,10 +8,27 @@ export default class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      numDays: 5,
+      numDays: 3,
       city: "Chicago",
       data: null,
     }
+
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.updateNumDays = this.updateNumDays.bind(this);
+  }
+
+  handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      this.setState({ city: event.target.value }, () => {
+        this.fetchData()
+      });
+    }
+  }
+
+  updateNumDays(event) {
+    this.setState({
+      numDays: event.target.value,
+    });
   }
 
   componentDidMount() {
@@ -46,16 +63,25 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <WeatherHeader
-          numDays={this.state.numDays}
-          city={this.state.city}
-        />
+        <h1>Weather app</h1>
+        <div className="form-row">
+          <div className="city-container block">
+            <label htmlFor="city">City: </label>
+            <input type="text" defaultValue={this.state.city} id="city" onKeyDown={this.handleKeyDown}></input>
+          </div>
+          <div className="num-days-container block" onChange={event => this.updateNumDays(event)}>
+            <label htmlFor="num_days_3">3 day</label>
+            <input type="radio" value="3" name="num_days" id="num_days_3" defaultChecked />
+            <label htmlFor="num_days_5">5 day</label>
+            <input type="radio" value="5" name="num_days" id="num_days_5" />
+          </div>
+        </div>
         <WeatherStrip
           loading={this.state.loading}
           stripData={this.state.data}
           numDays={this.state.numDays}
         />
-      </div>
+      </div >
     );
   }
 }

@@ -5,7 +5,6 @@ export default class WeatherStrip extends Component {
 
     render() {
         if (this.props.loading) {
-            console.log("hit");
             return (
                 <div className="loader">
                     <p>Loading...</p>
@@ -13,7 +12,6 @@ export default class WeatherStrip extends Component {
             )
         }
         else {
-            console.log(this.props.stripData);
             const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const d = new Date();
             return (
