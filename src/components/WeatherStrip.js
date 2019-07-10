@@ -7,13 +7,16 @@ const WeatherStrip = (props) => {
         <div className="weather-strip">
             <ul>
                 {
-                    props.stripData.slice(0, props.numCards).map((day, i) => {
-                        const m = moment.unix(day["time"]);
+                    props.stripData.slice(0, props.numCards).map((d, i) => {
+                        const m = moment.unix(d["time"]);
                         const OFFSET = 3;
                         return <WeatherCard
                             key={i}
-                            dayData={day}
-                            time={`${m.format("ha")}-${m.add(OFFSET, 'hours').format("ha")}`}
+                            index={i}
+                            isActive={i === props.activeIndex}
+                            cardData={d}
+                            time={`${m.format("ha")}-${m.add(OFFSET, "hours").format("ha")}`}
+                            onClickDrilldown={props.onClickDrilldown}
                         />
                     })
                 }
@@ -22,4 +25,4 @@ const WeatherStrip = (props) => {
     )
 };
 
-export default WeatherStrip
+export default WeatherStrip;

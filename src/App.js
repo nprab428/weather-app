@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import WeatherStrip from "./components/WeatherStrip"
+import WeatherDrilldown from "./components/WeatherDrilldown";
 import "./App.css";
 
 export default class App extends Component {
@@ -9,8 +10,9 @@ export default class App extends Component {
       loading: true,
       numCards: 3,
       city: "Chicago",
-      data: null,
-      error: false
+      stripData: null,
+      error: false,
+      activeIndex: null,
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -40,7 +42,7 @@ export default class App extends Component {
     const credentials = require("./etc/credentials.json")
     let url = `http://api.openweathermap.org/data/2.5/forecast?q=${this.state.city}&cnt=40&appid=${credentials.api_key}&units=imperial`
 
-    this.setState({ loading: true, error: false });
+    this.setState({ loading: true, error: false, activeIndex: null });
     request(url, function (error, response, body) {
       if (error) {
         console.error("error:", error);
@@ -54,12 +56,20 @@ export default class App extends Component {
         else {
           console.log("body", JSON.parse(body))
           this.setState({
-            data: JSON.parse(body)["list"].map(d => {
+            stripData: JSON.parse(body)["list"].map(d => {
               return {
                 time: d["dt"],
                 high: Math.round(d["main"]["temp_max"]),
                 low: Math.round(d["main"]["temp_min"]),
                 icon: d["weather"][0]["icon"]
+              }
+            }),
+            drilldownData: JSON.parse(body)["list"].map(d => {
+              return {
+                description: d["weather"][0]["description"],
+                humidity: Math.round(d["main"]["humidity"]),
+                cloudy: Math.round(d["clouds"]["all"]),
+                wind: d["wind"]["speed"]
               }
             }),
           })
@@ -69,7 +79,13 @@ export default class App extends Component {
     }.bind(this));
   }
 
-  renderResponse() {
+  handleDrilldown = (index) => {
+    this.setState({
+      activeIndex: index
+    });
+  }
+
+  renderStrip() {
     if (this.state.loading) {
       return (
         <div id="fountainG">
@@ -91,10 +107,20 @@ export default class App extends Component {
       return (
         <WeatherStrip
           loading={this.state.loading}
-          stripData={this.state.data}
+          stripData={this.state.stripData}
           numCards={this.state.numCards}
+          onClickDrilldown={this.handleDrilldown}
+          activeIndex={this.state.activeIndex}
         />
       )
+    }
+  }
+
+  renderDrilldown() {
+    if (this.state.activeIndex !== null) {
+      return <WeatherDrilldown
+        drilldownData={this.state.drilldownData[this.state.activeIndex]}
+      />
     }
   }
 
@@ -107,14 +133,15 @@ export default class App extends Component {
             <label htmlFor="city">City: </label>
             <input type="text" defaultValue={this.state.city} id="city" onKeyDown={this.handleKeyDown}></input>
           </div>
-          <div className="num-days-container block" onChange={event => this.updateNumCards(event)}>
-            <label htmlFor="num_days_3">9 hours</label>
-            <input type="radio" value="3" name="num_days" id="num_days_3" defaultChecked />
-            <label htmlFor="num_days_5">15 hours</label>
-            <input type="radio" value="5" name="num_days" id="num_days_5" />
+          <div className="num-cards-container block" onChange={event => this.updateNumCards(event)}>
+            <label htmlFor="num-cards-3">9 hours</label>
+            <input type="radio" value="3" name="num-cards" id="num-cards-3" defaultChecked />
+            <label htmlFor="num-cards-5">15 hours</label>
+            <input type="radio" value="5" name="num-cards" id="num-cards-5" />
           </div>
         </div>
-        {this.renderResponse()}
+        {this.renderStrip()}
+        {this.renderDrilldown()}
       </div >
     );
   }

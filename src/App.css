@@ -15,15 +15,39 @@ input[type="radio"]{
   margin: 0 15px 0 5px;
 }
 
-.weather-day {
+.weather-card {
   background-color: lightblue;
   padding: 30px 10px 30px 10px;
+  cursor: pointer;
+  /* transition: "box-shadow" 0.3s; */
 }
+
+.weather-card.selected {
+	border-bottom: 5px solid #685a5a;
+}
+
+.weather-card:hover {box-shadow: 0px 0px 5px 5px #e4ca7c;}
 
 .weather-strip ul li{
   display: inline-block;
   padding: 5px;
 }
+
+.weather-drilldown{
+	background-color: #dbdada;
+	display: inline-block;
+	padding: 0px 35px 0px 0px;
+}
+
+.weather-drilldown ul {
+  list-style: none;
+}
+
+.weather-drilldown ul li{
+  padding: 5px;
+  text-align: left;
+}
+
 
 /* https://icons8.com/cssload/en/horizontal-bars */
 #fountainG{
