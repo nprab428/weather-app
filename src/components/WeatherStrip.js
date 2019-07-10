@@ -1,18 +1,19 @@
 import React from 'react';
-import WeatherDay from './WeatherDay';
+import WeatherCard from './WeatherCard';
 
 const WeatherStrip = (props) => {
-    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const d = new Date();
+    var moment = require('moment')
     return (
         <div className="weather-strip">
             <ul>
                 {
-                    props.stripData.slice(0, props.numDays).map((day, i) => {
-                        return <WeatherDay
+                    props.stripData.slice(0, props.numCards).map((day, i) => {
+                        const m = moment.unix(day["time"]);
+                        const OFFSET = 3;
+                        return <WeatherCard
                             key={i}
                             dayData={day}
-                            dayOfWeek={weekdays[i + d.getDay()]}
+                            time={`${m.format("ha")}-${m.add(OFFSET, 'hours').format("ha")}`}
                         />
                     })
                 }

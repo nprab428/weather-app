@@ -7,14 +7,14 @@ export default class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      numDays: 3,
+      numCards: 3,
       city: "Chicago",
       data: null,
       error: false
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.updateNumDays = this.updateNumDays.bind(this);
+    this.updateNumCards = this.updateNumCards.bind(this);
   }
 
   handleKeyDown(event) {
@@ -25,9 +25,9 @@ export default class App extends Component {
     }
   }
 
-  updateNumDays(event) {
+  updateNumCards(event) {
     this.setState({
-      numDays: event.target.value,
+      numCards: event.target.value,
     });
   }
 
@@ -38,7 +38,7 @@ export default class App extends Component {
   fetchData() {
     const request = require("request")
     const credentials = require("./etc/credentials.json")
-    let url = `http://api.openweathermap.org/data/2.5/forecast?q=${this.state.city}&cnt=5&appid=${credentials.api_key}&units=imperial`
+    let url = `http://api.openweathermap.org/data/2.5/forecast?q=${this.state.city}&cnt=40&appid=${credentials.api_key}&units=imperial`
 
     this.setState({ loading: true, error: false });
     request(url, function (error, response, body) {
@@ -47,17 +47,19 @@ export default class App extends Component {
       }
       if (response) {
         console.log("statusCode:", response.statusCode);
-        // Assume wrong city entered (TODO could handle more specific error codes)
-        if (response.statusCode == "404") {
+        // Assume wrong city entered if 404 (TODO could handle more specific error codes)
+        if (response.statusCode === 404) {
           this.setState({ error: true })
         }
         else {
+          console.log("body", JSON.parse(body))
           this.setState({
-            data: JSON.parse(body)["list"].map(day => {
+            data: JSON.parse(body)["list"].map(d => {
               return {
-                high: Math.round(day["main"]["temp_max"]),
-                low: Math.round(day["main"]["temp_min"]),
-                icon: day["weather"][0]["icon"]
+                time: d["dt"],
+                high: Math.round(d["main"]["temp_max"]),
+                low: Math.round(d["main"]["temp_min"]),
+                icon: d["weather"][0]["icon"]
               }
             }),
           })
@@ -90,7 +92,7 @@ export default class App extends Component {
         <WeatherStrip
           loading={this.state.loading}
           stripData={this.state.data}
-          numDays={this.state.numDays}
+          numCards={this.state.numCards}
         />
       )
     }
@@ -105,10 +107,10 @@ export default class App extends Component {
             <label htmlFor="city">City: </label>
             <input type="text" defaultValue={this.state.city} id="city" onKeyDown={this.handleKeyDown}></input>
           </div>
-          <div className="num-days-container block" onChange={event => this.updateNumDays(event)}>
-            <label htmlFor="num_days_3">3 day</label>
+          <div className="num-days-container block" onChange={event => this.updateNumCards(event)}>
+            <label htmlFor="num_days_3">9 hours</label>
             <input type="radio" value="3" name="num_days" id="num_days_3" defaultChecked />
-            <label htmlFor="num_days_5">5 day</label>
+            <label htmlFor="num_days_5">15 hours</label>
             <input type="radio" value="5" name="num_days" id="num_days_5" />
           </div>
         </div>

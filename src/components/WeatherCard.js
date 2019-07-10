@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class WeatherDay extends Component {
+export default class WeatherCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,7 +13,7 @@ export default class WeatherDay extends Component {
         return (
             <li>
                 <div className='weather-day'>
-                    <p>{this.props.dayOfWeek}</p>
+                    <p>{this.props.time}</p>
                     <img src={iconUrl} alt="Weather img" />
                     <p>High: {this.props.dayData["high"]}, Low: {this.props.dayData["low"]}</p>
                 </div>
