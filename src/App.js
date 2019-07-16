@@ -7,11 +7,12 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      numCards: 3,
       city: "Chicago",
-      stripData: null,
+      numCards: 3,
+      loading: true,
       error: false,
+      stripData: null,
+      drilldownData: null,
       activeIndex: null,
     }
 

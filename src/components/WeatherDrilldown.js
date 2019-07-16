@@ -11,11 +11,11 @@ const renderEntries = (data) => {
     )
 };
 
-const WeatherDrilldown = (props) => {
+const WeatherDrilldown = ({ drilldownData }) => {
     return (
         <div className="weather-drilldown">
             <ul>
-                {renderEntries(props.drilldownData)}
+                {renderEntries(drilldownData)}
             </ul>
         </div>
     )
